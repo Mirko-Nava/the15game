@@ -127,9 +127,9 @@ var Game = {};
 			board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 			var times = 50 +  Math.floor(Math.random() * 50);
-			var index, empty = 15;
+			var index, empty = 15, i = 0;
 
-			for (var i = 0; i < times; i++) {
+			while (i < times) {
 				index = Math.floor(Math.random() * 15);
 
 				if (near(index, empty)) {
@@ -137,9 +137,7 @@ var Game = {};
 					board[index] = board[empty];
 					board[empty] = temp;
 					empty = index;
-				}
-				else {
-					i--;
+					i++;
 				}
 			}
 		}

@@ -11,7 +11,9 @@ var Game = {};
 
 	var context;
 	var board;
-	var playing;
+	var status;
+	var menu_btns = [];
+	var win_btns = [];
 
 	function near(i1, i2) {
 		var y1 = Math.floor(i1 / 4),
@@ -21,6 +23,101 @@ var Game = {};
 			dx = Math.abs(x1 - x2),
 			dy = Math.abs(y1 - y2);
 		return dx + dy === 1;
+	}
+
+	function inside(x, y, rect) {
+		return x > rect.x && x < (rect.x + rect.width) && y > rect.y && y < (rect.y + rect.height);
+	}
+
+	function draw_btns(btns) {
+		btns.forEach(function(btn) {
+			context.fillStyle = btn.bg_color;
+			context.fillRect((width - btn.width) / 2,
+							 btn.y,
+							 btn.width,
+							 btn.height);
+
+			context.font = (btn.height - 2 * btn.margin) + "px Arial"
+			context.fillStyle = btn.fg_color;
+			context.fillText(btn.content,
+							 (width - btn.width) / 2 + btn.margin,
+							 btn.y + btn.height - 2 *btn.margin);
+		});
+	}
+
+	game.init = function() {
+		var canvas = document.getElementsByTagName("canvas")[0];
+
+		document.body.style.width = "70%";
+		document.body.style.margin = "auto";
+		document.body.style["text-align"] = "center";
+
+		canvas.style.border = "3px solid black"
+		canvas.style.width = width + "px";
+		canvas.style.height = height  + "px";
+		canvas.width = width;
+		canvas.height = height;
+		canvas.onclick = game.input;
+
+		if (!context) {
+			context = canvas.getContext("2d");
+		}
+
+		if (!(canvas_x || canvas_y)) {
+			canvas_x = canvas.getBoundingClientRect().x;
+			canvas_y = canvas.getBoundingClientRect().y;
+		}
+
+		menu_btns.push({
+			width: 120,
+			height: 60,
+			x: (width - 120) / 2,
+			y: 190,
+			margin: 10,
+			bg_color: "#88472b",
+			fg_color: "#0d0515",
+			content: "Play",
+			action: game.start
+		});
+
+		win_btns.push({
+			width: 120,
+			height: 60,
+			x: (width - 120) / 2,
+			y: 150,
+			margin: 10,
+			bg_color: "#88472b",
+			fg_color: "#0d0515",
+			content: "Menu",
+			action: game.menu
+		});
+
+		win_btns.push({
+			width: 120,
+			height: 60,
+			x: (width - 120) / 2,
+			y: 220,
+			margin: 10,
+			bg_color: "#88472b",
+			fg_color: "#0d0515",
+			content: "Play",
+			action: game.start
+		});
+
+		game.menu();
+	}
+
+	game.menu = function() {
+		status = "menu";
+
+		context.fillStyle = "#fef8cd";
+		context.fillRect(0, 0, width, height);
+
+		context.font = "60px Arial"
+		context.fillStyle = "#0d0515";
+		context.fillText("The 15 Game", 60, 120);
+
+		draw_btns(menu_btns);
 	}
 
 	game.start = function() {
@@ -46,42 +143,20 @@ var Game = {};
 			}
 		}
 
-		var canvas = document.getElementsByTagName("canvas")[0];
-
-		document.body.style.width = "70%";
-		document.body.style.margin = "auto";
-		document.body.style["text-align"] = "center";
-
-		canvas.style.border = "3px solid black"
-		canvas.style.width = width + "px";
-		canvas.style.height = height  + "px";
-		canvas.width = width;
-		canvas.height = height;
-		canvas.onclick = game.input;
-
-		if (!context) {
-			context = canvas.getContext("2d");
-		}
-
 		context.font = font_size + "px Arial";
 		context.lineWidth = side_border;
 
-		if (!(canvas_x || canvas_y)) {
-			canvas_x = canvas.getBoundingClientRect().x;
-			canvas_y = canvas.getBoundingClientRect().y;
-		}
-
-		playing = true;
+		status = "playing";
 		scramble();
 		game.draw();
 	}
 
 	game.input = function(event) {
 
-		function get_cell_index(event) {
-			var y = Math.floor((event.clientX - canvas_x - 1) / side_length);
-			var x = Math.floor((event.clientY - canvas_y - 1) / side_length);
-			return x * 4 + y;
+		function get_cell_index(x, y) {
+			var j = Math.floor((x - 1) / side_length);
+			var i = Math.floor((y - 1) / side_length);
+			return i * 4 + j;
 		}
 
 		function get_empty_cell() {
@@ -101,8 +176,23 @@ var Game = {};
 			return true;
 		}
 
-		if (playing) {
-			var selected = get_cell_index(event);
+		var mouse_x = event.clientX - canvas_x;
+		var mouse_y = event.clientY - canvas_y;
+
+		if (status === "menu") {
+			menu_btns.forEach(function(b) {
+				if (inside(mouse_x, mouse_y, b)) {
+					b.action();
+				}
+			});
+		} else if (status === "win") {
+			win_btns.forEach(function(b) {
+				if (inside(mouse_x, mouse_y, b)) {
+					b.action();
+				}
+			});
+		} else if (status === "playing") {
+			var selected = get_cell_index(mouse_x, mouse_y);
 			var empty = get_empty_cell();
 
 			if (near(selected, empty)) {
@@ -114,7 +204,7 @@ var Game = {};
 				game.draw();
 
 				if (win()) {
-					playing = false;
+					status = "won";
 					setTimeout(game.victory, 800);
 				}
 			}
@@ -153,6 +243,8 @@ var Game = {};
 	}
 
 	game.victory = function() {
+		status = "win";
+
 		context.fillStyle = "#fef8cd";
 		context.fillRect(0, 0, width, height);
 
@@ -160,7 +252,7 @@ var Game = {};
 		context.fillStyle = "#0d0515";
 		context.fillText("Victory!", 60, 120);
 
-		setTimeout(game.start, 1200);
+		draw_btns(win_btns);
 	}
 
 }(Game))

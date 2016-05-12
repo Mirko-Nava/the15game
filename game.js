@@ -58,6 +58,7 @@ var Game = {};
 		canvas.width = width;
 		canvas.height = height;
 		canvas.onclick = game.input;
+		canvas.ontouchstart = game.input;
 
 		if (!context) {
 			context = canvas.getContext("2d");

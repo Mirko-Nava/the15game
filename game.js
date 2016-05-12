@@ -177,8 +177,14 @@ var Game = {};
 			return true;
 		}
 
-		var mouse_x = event.clientX - canvas_x;
-		var mouse_y = event.clientY - canvas_y;
+		if (event.type === "click") {
+			var mouse_x = event.clientX - canvas_x;
+			var mouse_y = event.clientY - canvas_y;
+		}
+		else if (event.type === "touchstart") {
+			var mouse_x = event.touches[0].clientX - canvas_x;
+			var mouse_y = event.touches[0].clientY - canvas_y;
+		}
 
 		alert("(" + mouse_x + ", " + mouse_y + ")");
 

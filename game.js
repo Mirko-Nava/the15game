@@ -65,8 +65,8 @@ var Game = {};
 		}
 
 		if (!(canvas_x || canvas_y)) {
-			canvas_x = canvas.getBoundingClientRect().x;
-			canvas_y = canvas.getBoundingClientRect().y;
+			canvas_x = canvas.offsetLeft;
+			canvas_y = canvas.offsetTop;
 		}
 
 		menu_btns.push({

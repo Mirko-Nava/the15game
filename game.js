@@ -154,6 +154,8 @@ var Game = {};
 
 	game.input = function(event) {
 
+		alert("touch or click");
+
 		function get_cell_index(x, y) {
 			var j = Math.floor((x - 1) / side_length);
 			var i = Math.floor((y - 1) / side_length);

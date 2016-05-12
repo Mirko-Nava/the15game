@@ -154,8 +154,6 @@ var Game = {};
 
 	game.input = function(event) {
 
-		alert("touch or click");
-
 		function get_cell_index(x, y) {
 			var j = Math.floor((x - 1) / side_length);
 			var i = Math.floor((y - 1) / side_length);
@@ -181,6 +179,8 @@ var Game = {};
 
 		var mouse_x = event.clientX - canvas_x;
 		var mouse_y = event.clientY - canvas_y;
+
+		alert("(" + mouse_x + ", " + mouse_y + ")");
 
 		if (status === "menu") {
 			menu_btns.forEach(function(b) {

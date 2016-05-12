@@ -184,9 +184,9 @@ var Game = {};
 		else if (event.type === "touchstart") {
 			var mouse_x = event.touches[0].clientX - canvas_x;
 			var mouse_y = event.touches[0].clientY - canvas_y;
-		}
 
-		alert("(" + mouse_x + ", " + mouse_y + ")");
+			alert("(" + mouse_x + ", " + mouse_y + ")");
+		}
 
 		if (status === "menu") {
 			menu_btns.forEach(function(b) {

@@ -186,6 +186,8 @@ var Game = {};
 			var mouse_y = event.touches[0].clientY - canvas_y;
 		}
 
+		event.preventDefault();
+
 		if (status === "menu") {
 			menu_btns.forEach(function(b) {
 				if (inside(mouse_x, mouse_y, b)) {

@@ -184,8 +184,6 @@ var Game = {};
 		else if (event.type === "touchstart") {
 			var mouse_x = event.touches[0].clientX - canvas_x;
 			var mouse_y = event.touches[0].clientY - canvas_y;
-
-			alert(event.touches[0] + ", " + event.touches[0].clientX + ", " + canvas_x);
 		}
 
 		if (status === "menu") {

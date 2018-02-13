@@ -46,7 +46,8 @@ var Game = {};
 	}
 
 	game.init = function() {
-		var canvas = document.getElementsByTagName("canvas")[0];
+		var canvas =  document.createElement('Canvas');
+		document.body.appendChild(canvas);
 
 		document.body.style.width = "70%";
 		document.body.style.margin = "auto";
